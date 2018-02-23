@@ -51,7 +51,7 @@ namespace drw
 		int dSize; 		// number of elements living in container.
 		int dCapacity;	// number of available space in container or current container size. grows in powers of 2.
 		
-	}// class - dvector ---- my attempt to recreate the implementation of c++'s vector class.
+	};// class - dvector ---- my attempt to recreate the implementation of c++'s vector class.
 }// namespace - drw
 
 #endif // DVECTOR_H

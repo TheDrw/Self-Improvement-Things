@@ -3,7 +3,6 @@
 
 int main()
 {
-	drw::dvector pleaseWork;
-
-	
+	drw::dvector<int> pleaseWork;
+	return 0;
 }
