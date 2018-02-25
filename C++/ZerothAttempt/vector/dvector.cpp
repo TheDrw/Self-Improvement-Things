@@ -1,5 +1,6 @@
+#include "stdafx.h"		// for visual studio
 #include "dvector.h"
-#include <iostream> // for debugging
+#include <iostream>		// for debugging
 
 namespace drw
 {
@@ -7,47 +8,46 @@ namespace drw
 	// container is just empty
 	template<class T>
 	dvector<T>::dvector() 
-		: arr(nullptr), dSize(0), dCapacity(1)
+		: dSize(0), dCapacity(1)
 	{
-		arr = new T[dSize];
+		arr = std::unique_ptr<T[]>(new T[dSize]);
 	}
 
 	// initialize the size of the container. 
 	// zeroes will be filled in the container
 	template<class T>
 	dvector<T>::dvector(const int size)
-		: arr(nullptr) , dSize(size)
+		: dSize(size)
 	{
 		dCapacity = size == 0 ? 1 : size;
-		arr = new T[dSize];
-		for (int i = 0; i < dSize; ++i) arr[i] = 0; // fill arr with 0's 
+		arr = std::unique_ptr<T[]>(new T[dSize]);
+		for (int i = 0; i < dSize; ++i) arr[i] = static_cast<T>(0); // fill arr with 0's 
 	}
 
 	// initialize the size of the container.
 	// and fill container with a value
 	template<class T>
 	dvector<T>::dvector(const int size, const T val)
-		: arr(nullptr), dSize(size)
+		: dSize(size)
 	{
 		dCapacity = size == 0 ? 1 : size;
-		arr = new T[dSize];
+		arr = std::unique_ptr<T[]>(new T[dSize]);
 		for (int i = 0; i < dSize; ++i) arr[i] = val;
 	}
 
 	// copys the passed in dvector
 	template<class T>
 	dvector<T>::dvector(dvector<T> &copyArr)
-		:arr(nullptr)
+		: arr(nullptr)
 	{
 		operator=(copyArr);
 	}
 
 	// destructor - memory gets free'd or somethin'
-	// deletes arr and for saftey measures, sets arr to nullptr
+	// deletes automatically arr and for saftey measures, sets arr to nullptr
 	template<class T>
 	dvector<T>::~dvector()
 	{
-		delete[]arr;
 		arr = nullptr;
 	}
 
@@ -56,23 +56,30 @@ namespace drw
 	template<class T>
 	dvector<T> & dvector<T>::operator=(const dvector<T> &copyArr)
 	{
-		if (arr != nullptr)
-		{
-			delete[] arr;
-			arr = nullptr;
-		}
+		if (arr != nullptr) arr = nullptr;
 
 		dSize = copyArr.size();
 		dCapacity = copyArr.capacity();
-		arr = new T[dCapacity];
+		arr = std::unique_ptr<T[]>(new T[dCapacity]);
 
 		for (int i = 0; i < dSize; ++i) arr[i] = copyArr[i]; // copy contents of copyArr into arr
 
 		return *this; // i cheated at this part
 	}
 
+
+	/////////////////////////////////////////////////
+	/////////////	     ITERATORS       ////////////
+	/////////////////////////////////////////////////
+
+
+
+
+
+
+
 	 ////////////////////////////////////////////////
-	 /////////////	     CAPACITY       ////////////
+	 /////////////	     CAPACITY       /////////////
 	 ////////////////////////////////////////////////
 
 	 // return size of container or number of elements in container.
@@ -90,7 +97,7 @@ namespace drw
 	template<class T>
 	void dvector<T>::resize(const unsigned int newSize)
 	{
-		if (newSize > dCapacity) reserve(resizeCapacity());
+		if (newSize > dCapacity) reserve(dCapacity * 2);
 		dSize = newSize;
 	}
 
@@ -105,7 +112,7 @@ namespace drw
 	template<class T>
 	bool dvector<T>::empty() const
 	{
-		return dSize == 0 ? true : false;
+		return dSize == 0;
 	}
 
 	// allocation of memory will occur if current size is less than passed in value. 
@@ -116,25 +123,23 @@ namespace drw
 	{
 		if (newCapacity < dSize) return; // if reserve's less than what's already available, skip
 
-		T *oldArr = arr;				// hold copy of old array 
-		arr = new T[newCapacity];		// create a new arr with new capacity
+		auto oldArr(std::move(arr));						// hold copy of old array 
+		arr = std::unique_ptr<T[]>(new T[newCapacity]);		// create a new arr with new capacity
 		for (int i = 0; i < dSize; ++i) arr[i] = oldArr[i];	// copy elements in newly sized arr
 
 		dCapacity = newCapacity;
-		delete[] oldArr;
 	}
 
-	// reallocates memory. copies elements into a new arr temporarily. 
+	// deallocates memory. copies elements into a new arr temporarily. 
 	// the dCapacity will be equal dSize.
 	template<class T>
 	void dvector<T>::shrink_to_fit()
 	{
-		T *oldArr = arr;
-		arr = new T[dSize];
+		auto oldArr(std::move(arr));
+		arr = std::unique_ptr<T[]>(new T[dSize]);
 		for (int i = 0; i < dSize; ++i) arr[i] = oldArr[i];
 
 		dCapacity = dSize == 0 ? 1 : dSize;
-		delete[] oldArr;
 	}
 
 	////////////////////////////////////////////////
@@ -149,20 +154,19 @@ namespace drw
 		return arr[index];
 	}
 
-	// returns first element
+	// returns reference of first element
 	template<class T>
-	T dvector<T>::front() const
+	T* dvector<T>::front() const
 	{
-		return T[0];
+		return &arr[0];
 	}
 
-	// returns last element
+	// returns reference of last element
 	template<class T>
-	T dvector<T>::back() const
+	T* dvector<T>::back() const
 	{
-		return T[dSize - 1];
+		return &arr[dSize - 1];
 	}
-
 
 	////////////////////////////////////////////////
 	/////////////	    MODIFIERS       ////////////
@@ -172,27 +176,26 @@ namespace drw
 	// will resize dCapacity if dSize + 1 >= dCapacity
 	// memory allocation will occur if needed
 	template<class T>
-	void dvector<T>::push_back(const T element)
+	void dvector<T>::push_back(const T& element)
 	{
 		if (dSize + 1 >= dCapacity)
 		{
-			reserve(resizeCapacity());
+			reserve(dCapacity * 2);
 		}
 
 		arr[dSize] = element;	// put new element at end of arr 
 		++dSize;
 	}
 
-	// deletes last element. decrements dSize.
+	// decrements dSize. "deleting" element isn't really necessary
 	// does not free up any memory when deleting elements.
 	template<class T>
 	void dvector<T>::pop_back()
 	{
-		arr[dSize] = 0;						// deletes last element by naking it zero
 		dSize = dSize == 0 ? 0 : dSize - 1;	// if 0, keep it 0, else decrement dSize.
 	}
 
-	// clears elements in arr. 
+	// "clears" elements in arr. values are still there but they aren't within reaching bounds anymore.
 	// i just learned that this DOES NOT free up memory or change dCapacity.
 	// to free up memory, use shrink_to_fit(int).
 	// this is so it will make pushing in new elements more efficient that when
@@ -200,16 +203,7 @@ namespace drw
 	template<class T>
 	void dvector<T>::clear()
 	{
-		for (int i = dSize; i > 0; --i) pop_back();
-	}
-
-	// returns value of what capacity should be resized to. mainly checks if it is zero. 
-	// then after that grows in powers of 2, unless shrink_to_fit is called. 
-	// then it grows by dSize * 2 or something
-	template<class T>
-	unsigned int dvector<T>::resizeCapacity()
-	{
-		return dCapacity * 2;
+		dSize = 0;
 	}
 
 }// namespace drw

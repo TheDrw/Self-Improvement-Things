@@ -12,6 +12,8 @@
 #ifndef DVECTOR_H
 #define DVECTOR_H
 
+#include <memory> // using for the container std::unique_ptr<T[]>
+
 namespace drw
 {
 	template<class T>
@@ -25,7 +27,12 @@ namespace drw
 		~dvector();
 		dvector<T> &operator=(const dvector<T>&);
 
-		// ITERATORS
+		// TODO : get back after creating iterator class
+		// ITERATORS 
+		//drw::iterator begin();
+		//drw::iterator end();
+		//drw::iterator rbegin();
+		//drw::iterator rend();
 
 		// CAPACITY
 		int size() const;
@@ -39,13 +46,13 @@ namespace drw
 		// ELEMENT ACCESS
 		T operator[](const unsigned int) const;
 		//T at(int) const;
-		T front() const;
-		T back() const;
+		T *front() const;
+		T *back() const;
 		//T data();
 
 		// MODIFIERS
 		//void assign(int, T);
-		void push_back(const T);
+		void push_back(const T&);
 		void pop_back();
 		//void insert();
 		//void erase();
@@ -53,12 +60,9 @@ namespace drw
 		void clear();
 
 	private:
-		unsigned int resizeCapacity();
-
-	private:
-		T *arr;				// short of array. used to be the container for dvector
-		int dSize; 			// number of elements living in container.
-		int dCapacity;		// number of available space in container or current container size. grows in powers of 2.
+		std::unique_ptr<T[]> arr;	// using unique_ptr to be the container. just learned about unique_ptrs today so why not use it? I've heard good things about it
+		int dSize; 					// number of elements living in container.
+		int dCapacity;				// number of available space in container or current container size. grows in powers of 2.
 
 	};// class - dvector ---- my attempt to recreate the implementation of c++'s vector class.
 }// namespace - drw
