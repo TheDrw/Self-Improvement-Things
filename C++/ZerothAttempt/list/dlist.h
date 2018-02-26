@@ -12,7 +12,7 @@
 #ifndef DLIST_H
 #define DLIST_H
 
-#include "dnode.cpp"
+#include "dnode.cpp" // getting linker issues if i use .h - i know this is probably not best practices
 #include <memory>
 #include <iostream>
 
@@ -49,7 +49,7 @@ namespace drw
 		//erase
 		//swap
 		//resize
-		//clear
+		void clear();
 
 		// OPERATIONS
 		//splice
