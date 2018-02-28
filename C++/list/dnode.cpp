@@ -50,11 +50,10 @@ namespace drw
 		return next;
 	}
 
-
 	template<class T>
 	T dnode<T>::get_data() const
 	{
 		return data;
 	}
-
 }// namespace drw
+

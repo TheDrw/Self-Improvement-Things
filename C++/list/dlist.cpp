@@ -3,24 +3,67 @@
 
 namespace drw
 {
+	// default constructor. doesn't create anything
 	template<class T>
 	dlist<T>::dlist()
 		:dSize(0), head(nullptr), tail(nullptr)
 	{
-		// not really sure what to put here
 	}
 
-	// calls clear() because it does essential that.
+	// creates a list with one node with the data that is passed in.
+	template<class T>
+	dlist<T>::dlist(const T& data)
+		:dSize(0), head(nullptr), tail(nullptr)
+	{
+		push_back(data);
+	}
+
+	// copies a list
+	template<class T>
+	dlist<T>::dlist(dlist<T>& copyList)
+		:dSize(0), head(nullptr), tail(nullptr)
+	{
+		operator=(copyList);
+	}
+
+	// calls clear() because it does essentially that.
 	template<class T>
 	dlist<T>::~dlist()
 	{
 		clear();
 	}
 
+	template<class T>
+	dlist<T>& dlist<T>::operator=(dlist<T>& copyList)
+	{
+		clear();							// delete what we have currently
+		auto curr = copyList.begin();		// used to traverse the copyList
+		while (curr != nullptr)				// this is where an iterator class would be useful, but I didn't make one so this will do.
+		{
+			push_back(curr->get_data());
+			curr = curr->get_next();
+		}
+
+		return *this;
+	}
+
 	/////////////////////////////////////////////////
 	/////////////	     ITERATORS       ////////////
 	/////////////////////////////////////////////////
 
+	// not really an iterator, but i need this for stuff
+	template<class T>
+	dnode<T>* dlist<T>::begin()
+	{
+		return head;
+	}
+
+	// not really an iterator, but i need this for stuff
+	template<class T>
+	dnode<T>* dlist<T>::end()
+	{
+		return tail;
+	}
 
 	////////////////////////////////////////////////
 	/////////////	     CAPACITY       /////////////
@@ -49,7 +92,6 @@ namespace drw
 	template<class T>
 	T dlist<T>::front()
 	{
-		// if (dSize == 0) return;
 		return head->get_data();
 	}
 
@@ -58,7 +100,6 @@ namespace drw
 	template<class T>
 	T dlist<T>::back()
 	{
-		// if (dSize == 0) return;
 		return tail->get_data();
 	}
 
@@ -170,7 +211,7 @@ namespace drw
 	template<class T>
 	void dlist<T>::clear()
 	{
-		if (dSize == 0) return;
+		//if (dSize == 0) return;
 
 		auto curr = head;				// curr is used to traverse the list
 		while (curr != nullptr)
@@ -183,5 +224,107 @@ namespace drw
 		head = nullptr;					// will get some errors without setting
 		tail = nullptr;					// the head and tail to point at nullptr
 		dSize = 0;						// it is safe to say there's nothing in the list so dSize is zilch 
+	}
+
+	////////////////////////////////////////////////
+	/////////////	   OPERATIONS       ////////////
+	////////////////////////////////////////////////
+
+	template<class T>
+	void dlist<T>::remove(const T &enemy)
+	{
+		bool found = false;
+		auto curr = begin();
+		while(curr != nullptr)
+		{
+			if (curr->get_data() == enemy)
+			{
+				found = true;
+				break;
+			}
+			curr = curr->get_next();
+		} 
+
+		if (found)
+		{
+			// if dSize is 1, just clear everything
+			// else if dSize is 2, check two cases where it can happen at head or tail and adjust accordingly
+			// else dSize >= 3, check if at head or tail then somewhere in the middle
+			if (dSize == 1)
+			{
+				clear();
+			}
+			else if (dSize == 2)
+			{
+				// if found at head, pop_front
+				// else found at tail, pop_back
+				if (curr == head) pop_front();
+				else pop_back();
+			}
+			else
+			{
+				// if head, pop_front
+				// else if tail, pop_back
+				// else pop_curr
+				if (curr == head) pop_front();
+				else if (curr == tail) pop_back();
+				else pop_curr(curr);
+				
+			}
+		}// if - found
+	}
+
+	// reverse list 
+	// this will add on the reverse part of the list onto the current list's back.
+	// then it will pop the number of elements it pushed onto the back from the front.
+	// I initially created a copyList to push nodes from the back of the current list in reverse order,
+	// but i realized it would double the destroys. one for the copy and one for my current list.
+	template<class T>
+	void dlist<T>::reverse()
+	{
+		if (dSize < 2) return;
+
+		unsigned int numOfPops = 0;			// may overflow if there's a lot of items. used to pop_front a certain number of times
+		auto curr = tail;					// start from teh tail
+		while (curr != nullptr)				// use this way of traversing because i didn't make an iterator class
+		{
+			push_back(curr->get_data());	// push from the back onto the current list
+			curr = curr->get_prev();		// go to previous node
+			++numOfPops;					// does magic
+		}
+		
+		for (int i = 0; i < numOfPops; ++i) pop_front();
+	}
+
+	// print the current list
+	template<class T>
+	void dlist<T>::print_list()
+	{
+		auto curr = head;
+		std::cout << "<- head - ";
+		while (curr != nullptr)
+		{
+			std::cout << "[ " << curr->get_data() << " ] - ";
+			curr = curr->get_next();
+		}
+		std::cout << "tail ->\n";
+	}
+
+
+	// private function
+	// only really used for remove()
+	// does pointer rearranging. dSize gets decremented
+	// a sort of visualization : ... <-[frontOfCurr]-> <-[curr]-> <-[behindOfCurr]-> ...
+	template<class T>
+	void dlist<T>::pop_curr(dnode<T> *&curr)
+	{
+		auto frontOfCurr = curr->get_prev();	// get the node before curr
+		auto behindOfCurr = curr->get_next();	// get the node after curr
+
+		frontOfCurr->set_next(behindOfCurr);	// have prevCurrNode's next look at nextCurrNode
+		behindOfCurr->set_prev(frontOfCurr);	// have nextCurrNode's prev look at prevCurrNode 
+
+		delete curr;							// now delete the node sandwiched in between
+		--dSize;								// decrement size
 	}
 }// namespace drw

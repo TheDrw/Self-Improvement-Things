@@ -9,7 +9,6 @@
 //			use bing
 //			not eat pizza
 
-
 #ifndef DNODE_H
 #define DNODE_H
 
@@ -38,7 +37,6 @@ namespace drw
 		dnode<T> *prev;
 		dnode<T> *next;
 	};
-
 }// namespace - drw
 
 #endif //DNODE_H

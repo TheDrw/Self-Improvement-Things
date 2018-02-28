@@ -23,9 +23,14 @@ namespace drw
 	{
 	public:
 		dlist();
+		dlist(const T&);
+		dlist(dlist<T>&);
 		~dlist();
+		dlist<T> &operator=(dlist<T>&);
 
-		// ITERATORS 
+		// FAKE ITERATORS
+		dnode<T> *begin();
+		dnode<T> *end();
 		
 		// CAPACITY
 		bool empty();
@@ -53,12 +58,16 @@ namespace drw
 
 		// OPERATIONS
 		//splice
-		//remove
+		void remove(const T&);
 		//remove_if
 		//unique
 		//merge
 		//sort
-		//reverse
+		void reverse();
+		void print_list();
+
+	private:
+		void pop_curr(dnode<T>*&);
 
 	private:
 		int dSize;
