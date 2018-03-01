@@ -1,6 +1,8 @@
 # dlist class and dforward_list class
 
 At the moment, it compiles and builds in visual studio 2017 and g++ 5.3.1-1ubuntu or something.
+All the classes live in the drw namespace, so keep that in mind.
+
 The dlist class is a doubly linked list. The dnode class is setup for doubly linked list.
 I've only tested dlist with primitive data types.
 So far it seems fine. Because I didn't implement iterators, I'm most likely going to leave it as is. 
