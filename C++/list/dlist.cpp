@@ -211,8 +211,6 @@ namespace drw
 	template<class T>
 	void dlist<T>::clear()
 	{
-		//if (dSize == 0) return;
-
 		auto curr = head;				// curr is used to traverse the list
 		while (curr != nullptr)
 		{
@@ -231,21 +229,12 @@ namespace drw
 	////////////////////////////////////////////////
 
 	template<class T>
-	void dlist<T>::remove(const T &enemy)
+	void dlist<T>::remove(const T &data)
 	{
-		bool found = false;
-		auto curr = begin();
-		while(curr != nullptr)
-		{
-			if (curr->get_data() == enemy)
-			{
-				found = true;
-				break;
-			}
-			curr = curr->get_next();
-		} 
+		if (dSize == 0) return;
 
-		if (found)
+		auto curr = find(data);
+		if (curr != nullptr)
 		{
 			// if dSize is 1, just clear everything
 			// else if dSize is 2, check two cases where it can happen at head or tail and adjust accordingly
@@ -258,18 +247,17 @@ namespace drw
 			{
 				// if found at head, pop_front
 				// else found at tail, pop_back
-				if (curr == head) pop_front();
-				else pop_back();
+				if (curr == head)	pop_front();
+				else				pop_back();
 			}
 			else
 			{
 				// if head, pop_front
 				// else if tail, pop_back
 				// else pop_curr
-				if (curr == head) pop_front();
-				else if (curr == tail) pop_back();
-				else pop_curr(curr);
-				
+				if (curr == head)		pop_front();
+				else if (curr == tail)	pop_back();
+				else					pop_curr(curr);
 			}
 		}// if - found
 	}
@@ -310,21 +298,40 @@ namespace drw
 		std::cout << "tail ->\n";
 	}
 
-
 	// private function
 	// only really used for remove()
-	// does pointer rearranging. dSize gets decremented
-	// a sort of visualization : ... <-[frontOfCurr]-> <-[curr]-> <-[behindOfCurr]-> ...
+	// does pointer rearranging. dSize gets decremented. deallocation of memory occurs.
+	// a sort of visualization : ... <-[leftOfCurr]-> <-[curr]-> <-[rightOfCurr]-> ...
 	template<class T>
 	void dlist<T>::pop_curr(dnode<T> *&curr)
 	{
-		auto frontOfCurr = curr->get_prev();	// get the node before curr
-		auto behindOfCurr = curr->get_next();	// get the node after curr
+		auto leftOfCurr = curr->get_prev();		// get the node before curr
+		auto rightdOfCurr = curr->get_next();	// get the node after curr
 
-		frontOfCurr->set_next(behindOfCurr);	// have prevCurrNode's next look at nextCurrNode
-		behindOfCurr->set_prev(frontOfCurr);	// have nextCurrNode's prev look at prevCurrNode 
+		leftOfCurr->set_next(rightdOfCurr);		// have prevCurrNode's next look at nextCurrNode
+		rightdOfCurr->set_prev(leftOfCurr);		// have nextCurrNode's prev look at prevCurrNode 
 
 		delete curr;							// now delete the node sandwiched in between
 		--dSize;								// decrement size
+	}
+
+	// private function
+	// used to find a node with the data passed in
+	// traverses the list from the head to the tail to find the data.
+	template<class T>
+	dnode<T>* dlist<T>::find(const T &data)
+	{
+		bool isFound = false;
+		auto curr = head;
+		while (curr != nullptr)
+		{
+			if (curr->get_data() == data)
+			{
+				isFound = true;
+				break;
+			}
+			curr = curr->get_next();
+		}
+		return isFound? curr : nullptr;
 	}
 }// namespace drw

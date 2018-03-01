@@ -1,6 +1,7 @@
 // Andrew Esberto
-// first attempt to recreate the list class mainly 4 lurningz
-// cans :	look at http://www.cplusplus.com/reference/list/list/ for reference
+// first attempt to recreate the forward_list class mainly 4 lurningz
+// I'm going to reuse the dnode class. Yes, it has a prev pointer, but I'm gonna just ignore it.
+// cans :	look at http://www.cplusplus.com/reference/forward_list/forward_list/ for reference
 //			check for syntax things that I don't remember
 //			use google for C++ things but not actual implementations of API
 //
@@ -13,72 +14,65 @@
 //		there will be issues when accessing the dnode class. so you have to do them separately. ¯\_(ツ)_/¯
 //		this stuff is made just to learn the implementations, anyways, and not for use on projects (unless you want it to crash a lot).
 
-#ifndef DLIST_H
-#define DLIST_H
+#ifndef DFORWARD_LIST_H
+#define DFORWARD_LIST_H
 
-#include "dnode.cpp" // getting linker issues if i use .h - i know this is probably not best practices
-#include <memory>
+#include "dnode.cpp" // linker issues when using the .h, so .cpp will do
 #include <iostream>
 
-namespace drw
+namespace drw 
 {
 	template<class T>
-	class dlist
+	class dforward_list
 	{
 	public:
-		dlist();
-		dlist(const T&);
-		dlist(dlist<T>&);
-		~dlist();
-		dlist<T> &operator=(dlist<T>&);
+		dforward_list();
+		dforward_list(const T&);
+		dforward_list(dforward_list<T>&);
+		~dforward_list();
+		dforward_list<T> &operator=(dforward_list<T>&);
 
-		// FAKE ITERATORS
+		// fake iterators
 		dnode<T> *begin();
-		dnode<T> *end();
-		
-		// CAPACITY
+		//dnode<T> *end();
+
+		// capacity
 		bool empty();
-		int size() const;
-		//int max_size();
+		//max_size
 
-		// ELEMENT ACCESS
+		// element access
 		T front();
-		T back();
 
-		// MODIFIERS
+		// modifiers
 		//assign
 		//emplace_front
 		void push_front(const T&);
 		void pop_front();
-		//emplace_back
-		void push_back(const T&);
-		void pop_back();
-		//emplace
-		//insert
-		//erase
+		//emplace_after
+		//insert_after
+		//erase_after
 		//swap
 		//resize
 		void clear();
-
-		// OPERATIONS
-		//splice
+		
+		// operations
+		//splice_after
 		void remove(const T&);
 		//remove_if
 		//unique
 		//merge
-		//sort // insert quickersort here
+		//sort
 		void reverse();
-		void print_list();
+
+		//extras
+		void print_list(); 
 
 	private:
-		void pop_curr(dnode<T>*&);
-		dnode<T>* find(const T&);
-
+		void pop_curr(dnode<T> *&);
+		dnode<T> *find(const T&);
 	private:
-		int dSize;
 		dnode<T> *head;
-		dnode<T> *tail;
-	};// class dlist
-}// namespace - drw
+	};// class dforward_list
+}// namespace drw
 
-#endif // DLIST_H
+#endif
