@@ -14,8 +14,6 @@ namespace drw
 	dnode<T>::~dnode()
 	{
 		std::cout << "destroyed : " << data << "\n";
-		prev = nullptr;
-		next = nullptr;
 	}
 
 	/////////////////////////////////////////////////

@@ -20,19 +20,19 @@ namespace drw
 	class dvector
 	{
 	public:
-		dvector();
-		dvector(const int);
-		dvector(const int, const T);
+		explicit dvector();
+		explicit dvector(const int);
+		explicit dvector(const int, const T);
 		dvector(dvector<T>&);
 		~dvector();
 		dvector<T> &operator=(const dvector<T>&);
 
 		// TODO : get back after creating iterator class
 		// ITERATORS 
-		//drw::iterator begin();
-		//drw::iterator end();
-		//drw::iterator rbegin();
-		//drw::iterator rend();
+		//iterator begin();
+		//iterator end();
+		//iterator rbegin();
+		//iterator rend();
 
 		// CAPACITY
 		int size() const;

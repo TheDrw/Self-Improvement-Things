@@ -26,8 +26,8 @@ namespace drw
 	class dforward_list
 	{
 	public:
-		dforward_list();
-		dforward_list(const T&);
+		explicit dforward_list();
+		explicit dforward_list(const T&);
 		dforward_list(dforward_list<T>&);
 		~dforward_list();
 		dforward_list<T> &operator=(dforward_list<T>&);

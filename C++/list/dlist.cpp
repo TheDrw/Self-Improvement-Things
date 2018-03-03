@@ -135,16 +135,10 @@ namespace drw
 	template<class T>
 	void dlist<T>::pop_front()
 	{
-		// if head is looking at nothing, do nothing
-		if (dSize == 0) return;
-
-		// if there's one object. this means head and tail are looking at the same node.
-		if (dSize == 1)
+		// if head is looking at nothing or there's one node, clear() it
+		if (dSize <= 1)
 		{
-			delete head;
-			dSize = 0;
-			head = nullptr;
-			tail = nullptr;
+			clear();
 			return;
 		}
 
@@ -185,15 +179,9 @@ namespace drw
 	void dlist<T>::pop_back()
 	{
 		// if tail's looking at nothing, do nothing
-		if (dSize == 0) return;
-
-		// if there's one node. this means head and tail are looking at teh same node.
-		if (dSize == 1)
+		if (dSize <= 1)
 		{
-			delete tail;
-			tail = nullptr;
-			head = nullptr;
-			dSize = 0;
+			clear();
 			return;
 		}
 

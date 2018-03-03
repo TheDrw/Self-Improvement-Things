@@ -43,12 +43,10 @@ namespace drw
 		operator=(copyArr);
 	}
 
-	// destructor - memory gets free'd or somethin'
-	// deletes automatically arr and for saftey measures, sets arr to nullptr
+	// destructor - memory gets free'd or somethin' automatically by smart point3r
 	template<class T>
 	dvector<T>::~dvector()
 	{
-		arr = nullptr;
 	}
 
 	// sets arr equal to copy the copyArr

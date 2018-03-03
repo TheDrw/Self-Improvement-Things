@@ -26,8 +26,8 @@ namespace drw
 	class dlist
 	{
 	public:
-		dlist();
-		dlist(const T&);
+		explicit dlist();
+		explicit dlist(const T&);
 		dlist(dlist<T>&);
 		~dlist();
 		dlist<T> &operator=(dlist<T>&);
