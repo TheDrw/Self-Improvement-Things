@@ -38,7 +38,7 @@ namespace drw
 		
 		// CAPACITY
 		bool empty();
-		int size() const;
+		std::size_t size() const;
 		//int max_size();
 
 		// ELEMENT ACCESS
@@ -75,7 +75,7 @@ namespace drw
 		dnode<T>* find(const T&);
 
 	private:
-		int dSize;
+		std::size_t dSize;
 		dnode<T> *head;
 		dnode<T> *tail;
 	};// class dlist

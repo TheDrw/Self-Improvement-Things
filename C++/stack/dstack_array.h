@@ -31,7 +31,7 @@ namespace drw
 
 		// member functions
 		bool empty();
-		int size() const;
+		std::size_t size() const;
 		T top() const;
 		void push(const T&);
 		//emplace
@@ -47,8 +47,8 @@ namespace drw
 		void resizeArr();
 
 	private:
-		int dSize;
-		int dCapacity;
+		std::size_t dSize;
+		std::size_t dCapacity;
 		std::unique_ptr<T[]> arr;
 
 	};// class dstack_array

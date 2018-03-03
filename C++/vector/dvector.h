@@ -12,7 +12,7 @@
 #ifndef DVECTOR_H
 #define DVECTOR_H
 
-#include <memory> // using for the container std::unique_ptr<T[]>
+#include <memory>
 
 namespace drw
 {
@@ -21,8 +21,8 @@ namespace drw
 	{
 	public:
 		explicit dvector();
-		explicit dvector(const int);
-		explicit dvector(const int, const T);
+		explicit dvector(const std::size_t);
+		explicit dvector(const std::size_t, const T);
 		dvector(dvector<T>&);
 		~dvector();
 		dvector<T> &operator=(const dvector<T>&);
@@ -35,16 +35,16 @@ namespace drw
 		//iterator rend();
 
 		// CAPACITY
-		int size() const;
+		std::size_t size() const;
 		//int max_size() const;
-		void resize(const unsigned int);
-		unsigned int capacity() const;
+		void resize(const std::size_t);
+		std::size_t capacity() const;
 		bool empty() const;
-		void reserve(const int);
+		void reserve(const std::size_t);
 		void shrink_to_fit();
 
 		// ELEMENT ACCESS
-		T operator[](const unsigned int) const;
+		T operator[](const std::size_t) const;
 		//T at(int) const;
 		T *front() const;
 		T *back() const;
@@ -61,8 +61,8 @@ namespace drw
 
 	private:
 		std::unique_ptr<T[]> arr;	// using unique_ptr to be the container. just learned about unique_ptrs today so why not use it? I've heard good things about it
-		int dSize; 					// number of elements living in container.
-		int dCapacity;				// number of available space in container or current container size. grows in powers of 2.
+		std::size_t dSize; 					// number of elements living in container.
+		std::size_t dCapacity;				// number of available space in container or current container size. grows in powers of 2.
 
 	};// class - dvector ---- my attempt to recreate the implementation of c++'s vector class.
 }// namespace - drw

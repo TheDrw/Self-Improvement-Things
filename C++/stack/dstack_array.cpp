@@ -23,7 +23,6 @@ namespace drw
 	template<class T>
 	dstack_array<T>::~dstack_array()
 	{
-		// smart ptr will do its thing
 	}
 
 	////////////////////////////////////////////////
@@ -39,7 +38,7 @@ namespace drw
 
 	// returns the size of the stack
 	template<class T>
-	int dstack_array<T>::size() const
+	std::size_t dstack_array<T>::size() const
 	{
 		return dSize;
 	}

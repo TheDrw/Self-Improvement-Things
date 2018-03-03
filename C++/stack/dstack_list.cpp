@@ -17,7 +17,7 @@ namespace drw
 		push(data);
 	}
 
-	// deletes list
+	// deletes list. deallocation of memory occurs
 	template<class T>
 	dstack_list<T>::~dstack_list()
 	{
@@ -41,7 +41,7 @@ namespace drw
 	}
 
 	template<class T>
-	int dstack_list<T>::size() const
+	std::size_t dstack_list<T>::size() const
 	{
 		return dSize;
 	}

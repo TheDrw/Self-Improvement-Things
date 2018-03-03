@@ -1,6 +1,5 @@
 #include "stdafx.h"		// for visual studio
 #include "dvector.h"
-#include <iostream>		// for debugging
 
 namespace drw
 {
@@ -16,23 +15,23 @@ namespace drw
 	// initialize the size of the container. 
 	// zeroes will be filled in the container
 	template<class T>
-	dvector<T>::dvector(const int size)
+	dvector<T>::dvector(const std::size_t size)
 		: dSize(size)
 	{
 		dCapacity = size == 0 ? 1 : size;
 		arr = std::unique_ptr<T[]>(new T[dSize]);
-		for (int i = 0; i < dSize; ++i) arr[i] = static_cast<T>(0); // fill arr with 0's 
+		for (std::size_t i = 0; i < dSize; ++i) arr[i] = static_cast<T>(0); // fill arr with 0's 
 	}
 
 	// initialize the size of the container.
 	// and fill container with a value
 	template<class T>
-	dvector<T>::dvector(const int size, const T val)
+	dvector<T>::dvector(const std::size_t size, const T val)
 		: dSize(size)
 	{
 		dCapacity = size == 0 ? 1 : size;
 		arr = std::unique_ptr<T[]>(new T[dSize]);
-		for (int i = 0; i < dSize; ++i) arr[i] = val;
+		for (std::size_t i = 0; i < dSize; ++i) arr[i] = val;
 	}
 
 	// copys the passed in dvector
@@ -43,10 +42,12 @@ namespace drw
 		operator=(copyArr);
 	}
 
-	// destructor - memory gets free'd or somethin' automatically by smart point3r
+	// destructor - memory gets free'd or somethin'
+	// deletes automatically arr and for saftey measures, sets arr to nullptr
 	template<class T>
 	dvector<T>::~dvector()
 	{
+		arr = nullptr;
 	}
 
 	// sets arr equal to copy the copyArr
@@ -60,7 +61,7 @@ namespace drw
 		dCapacity = copyArr.capacity();
 		arr = std::unique_ptr<T[]>(new T[dCapacity]);
 
-		for (int i = 0; i < dSize; ++i) arr[i] = copyArr[i]; // copy contents of copyArr into arr
+		for (std::size_t i = 0; i < dSize; ++i) arr[i] = copyArr[i]; // copy contents of copyArr into arr
 
 		return *this; // i cheated at this part
 	}
@@ -71,18 +72,13 @@ namespace drw
 	/////////////////////////////////////////////////
 
 
-
-
-
-
-
 	 ////////////////////////////////////////////////
 	 /////////////	     CAPACITY       /////////////
 	 ////////////////////////////////////////////////
 
 	 // return size of container or number of elements in container.
 	template<class T>
-	int dvector<T>::size() const
+	std::size_t dvector<T>::size() const
 	{
 		return dSize;
 	}
@@ -93,7 +89,7 @@ namespace drw
 	// calls on reserve(int) if passed in value is greater than the current capacity.
 	// allocation of memory may occur
 	template<class T>
-	void dvector<T>::resize(const unsigned int newSize)
+	void dvector<T>::resize(const std::size_t newSize)
 	{
 		if (newSize > dCapacity) reserve(dCapacity * 2);
 		dSize = newSize;
@@ -101,7 +97,7 @@ namespace drw
 
 	// returns capacity of container
 	template<class T>
-	unsigned int dvector<T>::capacity() const
+	std::size_t dvector<T>::capacity() const
 	{
 		return dCapacity;
 	}
@@ -117,13 +113,13 @@ namespace drw
 	// increases dCapacity. 
 	// kind of cheated at this part by accident. O.o
 	template<class T>
-	void dvector<T>::reserve(const int newCapacity)
+	void dvector<T>::reserve(const std::size_t newCapacity)
 	{
 		if (newCapacity < dSize) return; // if reserve's less than what's already available, skip
 
 		auto oldArr(std::move(arr));						// hold copy of old array 
 		arr = std::unique_ptr<T[]>(new T[newCapacity]);		// create a new arr with new capacity
-		for (int i = 0; i < dSize; ++i) arr[i] = oldArr[i];	// copy elements in newly sized arr
+		for (std::size_t i = 0; i < dSize; ++i) arr[i] = oldArr[i];	// copy elements in newly sized arr
 
 		dCapacity = newCapacity;
 	}
@@ -135,7 +131,7 @@ namespace drw
 	{
 		auto oldArr(std::move(arr));
 		arr = std::unique_ptr<T[]>(new T[dSize]);
-		for (int i = 0; i < dSize; ++i) arr[i] = oldArr[i];
+		for (std::size_t i = 0; i < dSize; ++i) arr[i] = oldArr[i];
 
 		dCapacity = dSize == 0 ? 1 : dSize;
 	}
@@ -147,7 +143,7 @@ namespace drw
 	// access element like an array
 	// should i check if what they're accessing is possibly out of range?
 	template<class T>
-	T dvector<T>::operator[](const unsigned int index) const
+	T dvector<T>::operator[](const std::size_t index) const
 	{
 		return arr[index];
 	}

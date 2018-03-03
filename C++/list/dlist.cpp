@@ -78,7 +78,7 @@ namespace drw
 
 	// returns the size of the list
 	template<class T>
-	int dlist<T>::size() const
+	std::size_t dlist<T>::size() const
 	{
 		return dSize;
 	}
@@ -178,7 +178,7 @@ namespace drw
 	template<class T>
 	void dlist<T>::pop_back()
 	{
-		// if tail's looking at nothing, do nothing
+		// if tail's looking at nothing and there's one node, clear
 		if (dSize <= 1)
 		{
 			clear();
