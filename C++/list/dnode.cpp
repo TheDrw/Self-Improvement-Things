@@ -5,10 +5,8 @@ namespace drw
 {
 	template<class T>
 	dnode<T>::dnode(const T &d)
-		:prev(nullptr), next(nullptr)
-	{
-		data = d;
-	}
+		:prev(nullptr), next(nullptr), data(d)
+	{}
 
 	template<class T>
 	dnode<T>::~dnode()

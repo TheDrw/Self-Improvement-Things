@@ -45,8 +45,8 @@ namespace drw
 		{
 		public:
 			dnode(const T&d)
-				:prev(nullptr), next(nullptr)
-			{ data = d; }
+				:prev(nullptr), next(nullptr), data(d)
+			{}
 			~dnode() {}
 
 			// SETTERS
