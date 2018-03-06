@@ -8,11 +8,13 @@ Because this was kind of trivial, I don't need to provide test cases.
 I provided a print_queue function if you want to try it out.
 I just did 10 pushes of i from 1 to 10, and 11 pops to test for any issues.
 
-The array version of the queue works fine at the moment. But the only problem is I want it to shrink when
-it reaches a certain number of items on the stack. Other than that, it will grow and work fine.
-So at the moment, there's a lot of couts everywhere. I'll fix it soon, I hope.
-Me thinking of the array circular is kind of hurting my brain. I'm not used to it.
-I'm not used to using my brain, that is.
+The array version of the queue works fine at the moment. 
+The queue is dynamic meaning the array it is used to hold the items grows and shrinks by depending how many items are in the queue.
+It is pretty much a vector.  The array grows in powers of 2 after 4, so capacity is within \[4,inf). It is not really infinite, but you get the idea.
+The tricky part when implementing this was how the keep track of the front and back when shrinking. 
+I believe the tests I've put in main.cpp are fair enough to pass the basics of a queue.
+It checks the when the array is changing in size and see's if the interaction with the array lines up with the queue.
+
 
 I also think I might need to look into the linker issue more, but I can't for the life of me figure out
 why there are linking problems. Hmm...all I can say is put the .cpp in your main to have it have no linking problems.
