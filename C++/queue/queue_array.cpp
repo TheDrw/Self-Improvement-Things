@@ -1,21 +1,19 @@
+// Andrew Esberto
 #include "stdafx.h"
 #include "queue_array.h"
-
 
 namespace drw
 {
 	template<class T>
 	queue_array<T>::queue_array()
-		:dSize(0), dCapacity(4), dFront(1), dBack(1)
+		:dSize(0), dCapacity(4), dFront(0), dBack(0)
 	{
-		dFront = 1;
-		dBack = 1;
 		dArray = std::unique_ptr<T[]>(new T[dCapacity]);
 	}
 
 	template<class T>
 	queue_array<T>::queue_array(const T &data)
-		:dSize(0), dCapacity(4), dFront(1), dBack(1)
+		:dSize(0), dCapacity(4), dFront(0), dBack(0)
 	{
 		dArray = std::unique_ptr<T[]>(new T[dCapacity]);
 		push(data);
@@ -27,12 +25,14 @@ namespace drw
 		// smart pointer b smart and duz thingz 4 me.
 	}
 
+	// returns true if queue is empty
 	template<class T>
 	bool queue_array<T>::empty()
 	{
 		return dSize == 0;
 	}
 
+	// return current size of queue.
 	template<class T>
 	std::size_t queue_array<T>::size() const
 	{
@@ -53,51 +53,66 @@ namespace drw
 		return dArray[dBack];
 	}
 
-	// enqueue
+	// enqueue - insert element to the back of the queue.
+	// increments size and possible memory allocation occurs.
+	// the queue will grow if the we all spots are taken in the array.
 	template<class T>
 	void queue_array<T>::push(const T& data)
 	{
-		//std::cout << "pushing : " << data << "\n";
 		dArray[dBack] = data;
 		++dSize;
 
 		// if size reaches capacity, dCapacity will double in size
-		if (dSize == dCapacity)	grow();
-
-		dBack = (dBack + 1) % dCapacity;	// if dCapcity doubles, having it here will effect the circular thing
+		// else move dBack up
+		if (dSize == dCapacity)
+		{
+			grow();
+		}
+		else
+		{
+			dBack = (dBack + 1) % dCapacity;
+		}
 	}
 
-	// dequeue
+	// dequeue - pop front element in the queue.
+	// if queue is empty, nothing happens.
+	// decrements size and possible memory deallocation occurs.
+	// the queue will 1/2 in size if 1/4th of the capacity is being used.
+	// and this will only occur if capacity != 4.
 	template<class T>
 	void queue_array<T>::pop()
 	{
 		if (empty()) return;
 
-		//std::cout << "popping: " << front() << " \n";
-		
 		--dSize;
 
-		// TODO : SHRINK DUZ NAUGHT WURK! T_T
-		//const int INITIAL_CAPACITY = 4;
-		// if (dCapacity == dSize * INITIAL_CAPACITY && dCapacity != INITIAL_CAPACITY) shrink();
-		
-
-		dFront = (dFront + 1) % dCapacity;
+		const int THRESHOLD_CAPACITY = 4;
+		if (dCapacity == dSize * THRESHOLD_CAPACITY && dCapacity != THRESHOLD_CAPACITY)
+		{
+			shrink();
+		}
+		else
+		{
+			dFront = (dFront + 1) % dCapacity;
+		}
 	}
 
+	// prints queue
 	template<class T>
 	void queue_array<T>::print_queue()
 	{
 		std::cout << "queue : ";
-		for(std::size_t i = 0; i < dSize; ++i)
+		for (std::size_t i = 0; i < dSize; ++i)
 		{
 			std::size_t index = (dFront + i) % dCapacity;
 			std::cout << dArray[index] << " | ";
 		}
 		std::cout << " .\n";
-		print_array();
+		//print_array();
 	}
 
+	// prints the array that's used for the queue
+	// note: will include garbage values
 	template<class T>
 	void queue_array<T>::print_array()
 	{
@@ -107,9 +122,11 @@ namespace drw
 			std::cout << dArray[i] << " | ";
 		}
 		std::cout << " .\n";
-		std::cout << "front : " << dFront << "  back: " << dBack <<  " size: " << dSize <<  " cap: " << dCapacity << "\n\n";
+		std::cout << "front : " << dFront << "  back: " << dBack << " size: " << dSize << " cap: " << dCapacity << "\n\n";
 	}
 
+	// grows the array when queue is full.
+	// the capacity will double and allocation of memory will occur.
 	template<class T>
 	void queue_array<T>::grow()
 	{
@@ -117,42 +134,37 @@ namespace drw
 		dCapacity *= 2;										// double cap
 		auto oldArray(std::move(dArray));					// temp store old array
 		dArray = std::unique_ptr<T[]>(new T[dCapacity]);	// new resized array
-		std::size_t newArrayIndex = 0;						// used to put set the new dBack index after transfer
+
 		for (std::size_t i = 0; i < dSize; ++i)
 		{
 			std::size_t oldArrayIndex = (dFront + i) % oldCapacity;
-			newArrayIndex = (dFront + i) % dCapacity;
-
-			dArray[newArrayIndex] = oldArray[oldArrayIndex];
+			dArray[i] = oldArray[oldArrayIndex];
 		}
-		dBack = newArrayIndex;								// translate the old back position to this new one
+		dFront = 0;
+		dBack = dSize;								
 	}
 
-	// TODO : fix it
+	// shrinks array when queue is only occupying 1/4th of the capacity
+	// capacity is cut in half and dellocation of memory will occur.
+	// function is similar to grow() but in oldArrayIndex, i add 1 in the expression.
+	// i added 1 because reading from the array would start 1 behind for some reason. why? ¯\_(ツ)_/¯
+	// i wanted to separate it and use the common functionality from grow and shrink but the +1 thing ruins it.
+	// mainly because everything is working how it is and if i change that, i'll have to do stuff.
+	// unless pizza is involved, i ain't fixing what ain't broke. 
 	template<class T>
 	void queue_array<T>::shrink()
 	{
-		std::cout <<  "BEFORE SHIRNK--------\n";
-		print_queue();
+		std::size_t oldCapacity = dCapacity;				// remember old capacity
+		dCapacity /= 2;										// cut capacity in half
+		auto oldArray(std::move(dArray));					// temp story old array
+		dArray = std::unique_ptr<T[]>(new T[dCapacity]);	// resize curr array
 
-
-		std::size_t oldCapacity = dCapacity;
-		dCapacity /= 2;
-		auto oldArray(std::move(dArray));
-		dArray = std::unique_ptr<T[]>(new T[dCapacity]);
-		std::size_t newArrayIndex = 0;
-		//std::size_t temp = dFront % dCapacity;
 		for (std::size_t i = 0; i < dSize; ++i)
 		{
-			std::size_t oldArrayIndex = (dFront + i) % oldCapacity;
-			newArrayIndex = (dFront + i) % dCapacity;
-
-			dArray[newArrayIndex] = oldArray[oldArrayIndex];
+			std::size_t oldArrayIndex = (dFront + i + 1) % oldCapacity;	
+			dArray[i] = oldArray[oldArrayIndex];						
 		}
-		//dFront = temp;
-		dBack = newArrayIndex;
-
-		std::cout << "AFTER SHRINK ------- \n";
-		print_queue();
+		dFront = 0;
+		dBack = dSize;
 	}
 }// namespace - drw

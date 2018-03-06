@@ -52,7 +52,6 @@ namespace drw
 		std::size_t dCapacity;			// it doesn't mean differentiation.
 		std::size_t dFront;				// although, it could if you wanted it to.
 		std::size_t dBack;
-
 	};// class - queue_array 
 }// namespace - drw
 #endif
