@@ -34,6 +34,7 @@ namespace drw
 		{
 			binary_node() : data(d), left(), right() {}
 			binary_node(const T& d) : data(d), left(), right() {}
+			~binary_node() { std::cout << "killed " << data << '\n'; }
 
 			T data;
 			node_ptr left;
@@ -49,13 +50,16 @@ namespace drw
 		binary_search_tree &operator=( binary_search_tree &&);
 
 		// CAPACITY
-		bool contains(const T&) ;
-		bool empty() const;
-		std::size_t size() const;
+		const bool contains(const T&);
+		const bool empty() const;
+		const std::size_t size() const;
 
 		// ELEMENT ACCESS
 		const T& find_min() const;
 		const T& find_max() const;
+		const T& find_min_recurse();
+		const T& find_max_recurse();
+		
 
 		// MODIFIERS
 		void insert(const T&);
@@ -68,21 +72,22 @@ namespace drw
 		void print_tree() ;
 
 	private:
-		bool contains(const T&, node_ptr&) ;
+		const bool contains(const T&, node_ptr&);
 		void insert(const T&, node_ptr&) const;
 		void remove(const T&, node_ptr&) const;
 		
 
-		node_ptr find_min(node_ptr&) const;
-		node_ptr find_max(node_ptr&) const;
+		const T& find_min_recurse(node_ptr&);
+		const T& find_max_recurse(node_ptr&);
 
-		void make_empty(node_ptr&);
 		void print_tree(node_ptr&) const;
 
 	private:
 		node_ptr root;
 		std::size_t node_count;
 	};
+
+	
 
 	// class binary_search_tree
 }// namespace drw
