@@ -34,7 +34,7 @@ namespace drw
 		// node for the binary search tree. placed here for convienience
 		struct binary_node
 		{
-			binary_node() : data(d), left(), right() {}
+			binary_node() : data(), left(), right() {}
 			binary_node(const T& d) : data(d), left(), right() {}
 			~binary_node() { std::cout << "killed " << data << '\n'; }
 
@@ -53,9 +53,9 @@ namespace drw
 		binary_search_tree &operator=( binary_search_tree &&);
 		
 		// CAPACITY
-		const bool contains(const T &);
-		const bool empty() const;
-		const std::size_t size() const;
+		bool contains(const T &);
+		bool empty() const;
+		std::size_t size() const;
 
 		// ELEMENT ACCESS
 		const T &find_min() const;
@@ -77,8 +77,8 @@ namespace drw
 		void depth_of_tree();
 
 	private:
-		const bool contains(const T &, node_ptr &);
-		void insert(const T &, node_ptr &) const;
+		bool contains(const T &, node_ptr &);
+		void insert(const T &, node_ptr &);
 		void remove(const T &, node_ptr &);
 		
 		binary_node *find_min_recurse(node_ptr &);
@@ -86,9 +86,9 @@ namespace drw
 
 		void print_tree(node_ptr &, int) const;
 		void print_node(node_ptr &) const;
-		int depth_of_tree(node_ptr &, int, int&);
+		void depth_of_tree(node_ptr &, int, int&);
 
-		const bool is_less_than(const T &, const T &) const;
+		bool is_less_than(const T &, const T &);
 
 	private:
 		node_ptr root;
