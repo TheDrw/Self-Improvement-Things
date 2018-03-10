@@ -1,14 +1,15 @@
-#include "stdafx.h"
 #include "dstack_array.h"
 
 namespace drw
 {
 	// default constructor
+	// magic number 0 is starting size.
+	// magic number 4 is the starting capacity.
 	template<class T>
 	dstack_array<T>::dstack_array()
 		:dSize(0), dCapacity(4)
 	{
-		arr = std::unique_ptr<T[]>(new T[dCapacity]);
+		arr = std::make_unique<T[]>(dCapacity);
 	}
 
 	// initialize stack with one item on the stack
@@ -16,17 +17,24 @@ namespace drw
 	dstack_array<T>::dstack_array(const T &data)
 		:dSize(0), dCapacity(4)
 	{
-		arr = std::unique_ptr<T[]>(new T[dCapacity]);
+		arr = std::make_unique<T[]>(dCapacity);
 		push(data);
 	}
 
 	template<class T>
-	dstack_array<T>::~dstack_array()
+	dstack_array<T>::dstack_array(std::initializer_list<T> i_list)
+		:dSize(0), dCapacity(4)
 	{
+		arr = std::make_unique<T[]>(dCapacity);
+		for(const auto &element : i_list) push(element);
 	}
+	
+	template<class T>
+	dstack_array<T>::~dstack_array()
+	{}
 
 	////////////////////////////////////////////////
-	/////////////	 MEMBER FUNCTIONS    ///////////
+	/////////////	 MEMBER FUNCTIONS    /////////////
 	////////////////////////////////////////////////
 
 	// checks if stack is empty
@@ -45,7 +53,7 @@ namespace drw
 
 	// returns the item on the top of the stack
 	template<class T>
-	T dstack_array<T>::top() const
+	T &dstack_array<T>::top() const
 	{
 		return arr[dSize - 1];
 	}
@@ -69,7 +77,7 @@ namespace drw
 	{
 		if (empty()) return;
 
-		const int INITIAL_CAPACITY = 4;
+		const std::size_t INITIAL_CAPACITY = 4;
 		if (dCapacity == dSize * INITIAL_CAPACITY && dCapacity != INITIAL_CAPACITY) shrink();
 
 		--dSize;
@@ -80,15 +88,14 @@ namespace drw
 	void dstack_array<T>::print_stack()
 	{
 		std::cout << "bottom | ";
-		for (int i = 0; i < dSize; ++i)
+		for (std::size_t i = 0; i < dSize; ++i)
 		{
 			std::cout << arr[i] << " | ";
 		}
 		std::cout << " top.\n";
 	}
 
-
-	/// private functions
+	///////////////////////// private functions
 
 	// used to double capacity of array when size meets capacity.
 	// allocation of memory will occur
@@ -116,8 +123,8 @@ namespace drw
 	void dstack_array<T>::resizeArr()
 	{
 		auto oldArr(std::move(arr));
-		arr = std::unique_ptr<T[]>(new T[dCapacity]);
-		for (int i = 0; i < dSize; ++i) arr[i] = oldArr[i];
+		arr = std::make_unique<T[]>(dCapacity);
+		for (std::size_t i = 0; i < dSize; ++i) arr[i] = oldArr[i];
 	}
 	
 }
