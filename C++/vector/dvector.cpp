@@ -9,7 +9,7 @@ namespace drw
 	dvector<T>::dvector() 
 		: dSize(0), dCapacity(1)
 	{
-		arr = std::unique_ptr<T[]>(new T[dSize]);
+		arr = std::make_unique<T[]>(dSize);
 	}
 
 	// initialize the size of the container. 
@@ -19,7 +19,7 @@ namespace drw
 		: dSize(size)
 	{
 		dCapacity = size == 0 ? 1 : size;
-		arr = std::unique_ptr<T[]>(new T[dSize]);
+		arr = std::make_unique<T[]>(dSize);
 		for (std::size_t i = 0; i < dSize; ++i) arr[i] = static_cast<T>(0); // fill arr with 0's 
 	}
 
@@ -30,14 +30,22 @@ namespace drw
 		: dSize(size)
 	{
 		dCapacity = size == 0 ? 1 : size;
-		arr = std::unique_ptr<T[]>(new T[dSize]);
+		arr = std::make_unique<T[]>(dSize);
 		for (std::size_t i = 0; i < dSize; ++i) arr[i] = val;
+	}
+
+	template<class T>
+	dvector<T>::dvector(std::initializer_list<T> i_list)
+		: dSize(0), dCapacity(1)
+	{
+		arr = std::make_unique<T[]>(dSize);
+		for (const auto& element : i_list)	push_back(element);
 	}
 
 	// copys the passed in dvector
 	template<class T>
 	dvector<T>::dvector(dvector<T> &copyArr)
-		: arr(nullptr)
+		: arr()
 	{
 		operator=(copyArr);
 	}
@@ -46,9 +54,7 @@ namespace drw
 	// deletes automatically arr and for saftey measures, sets arr to nullptr
 	template<class T>
 	dvector<T>::~dvector()
-	{
-		arr = nullptr;
-	}
+	{}
 
 	// sets arr equal to copy the copyArr
 	// will delete current container if it is already set to something
@@ -59,7 +65,7 @@ namespace drw
 
 		dSize = copyArr.size();
 		dCapacity = copyArr.capacity();
-		arr = std::unique_ptr<T[]>(new T[dCapacity]);
+		arr = std::make_unique<T[]>(dCapacity);
 
 		for (std::size_t i = 0; i < dSize; ++i) arr[i] = copyArr[i]; // copy contents of copyArr into arr
 
@@ -118,7 +124,7 @@ namespace drw
 		if (newCapacity < dSize) return; // if reserve's less than what's already available, skip
 
 		auto oldArr(std::move(arr));						// hold copy of old array 
-		arr = std::unique_ptr<T[]>(new T[newCapacity]);		// create a new arr with new capacity
+		arr = std::make_unique<T[]>(newCapacity);		// create a new arr with new capacity
 		for (std::size_t i = 0; i < dSize; ++i) arr[i] = oldArr[i];	// copy elements in newly sized arr
 
 		dCapacity = newCapacity;
@@ -130,7 +136,7 @@ namespace drw
 	void dvector<T>::shrink_to_fit()
 	{
 		auto oldArr(std::move(arr));
-		arr = std::unique_ptr<T[]>(new T[dSize]);
+		arr = std::make_unique<T[]>(dSize);
 		for (std::size_t i = 0; i < dSize; ++i) arr[i] = oldArr[i];
 
 		dCapacity = dSize == 0 ? 1 : dSize;
@@ -150,16 +156,16 @@ namespace drw
 
 	// returns reference of first element
 	template<class T>
-	T* dvector<T>::front() const
+	T &dvector<T>::front() const
 	{
-		return &arr[0];
+		return arr[0];
 	}
 
 	// returns reference of last element
 	template<class T>
-	T* dvector<T>::back() const
+	T &dvector<T>::back() const
 	{
-		return &arr[dSize - 1];
+		return arr[dSize - 1];
 	}
 
 	////////////////////////////////////////////////

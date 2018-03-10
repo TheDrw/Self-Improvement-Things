@@ -20,6 +20,8 @@
 #include <cstddef>
 #include <memory>
 #include <iostream>
+#include <string>
+#include <initializer_list>
 
 namespace drw
 {
@@ -45,50 +47,53 @@ namespace drw
 		explicit binary_search_tree();
 		explicit binary_search_tree(const binary_search_tree &);
 		explicit binary_search_tree(binary_search_tree &&);
+		binary_search_tree(std::initializer_list<T>);
 		~binary_search_tree();
 		binary_search_tree &operator=(const binary_search_tree &);
 		binary_search_tree &operator=( binary_search_tree &&);
-
+		
 		// CAPACITY
-		const bool contains(const T&);
+		const bool contains(const T &);
 		const bool empty() const;
 		const std::size_t size() const;
 
 		// ELEMENT ACCESS
-		const T& find_min() const;
-		const T& find_max() const;
-		const T& find_min_recurse();
-		const T& find_max_recurse();
+		const T &find_min() const;
+		const T &find_max() const;
+		const T &find_min_recurse();
+		const T &find_max_recurse();
 		
-
 		// MODIFIERS
-		void insert(const T&);
-		void remove(const T&);
+		void insert(const T &);
+		void remove(const T &);
 		void make_empty();
 		
 		//node_ptr clone(node_ptr) const;
 
 		// EXTRAS
-		void print_tree() ;
+		void print_tree_preorder();
+		void print_tree_inorder();
+		void print_tree_postorder();
+		void depth_of_tree();
 
 	private:
-		const bool contains(const T&, node_ptr&);
-		void insert(const T&, node_ptr&) const;
-		void remove(const T&, node_ptr&) const;
+		const bool contains(const T &, node_ptr &);
+		void insert(const T &, node_ptr &) const;
+		void remove(const T &, node_ptr &);
 		
+		binary_node *find_min_recurse(node_ptr &);
+		binary_node *find_max_recurse(node_ptr &);
 
-		const T& find_min_recurse(node_ptr&);
-		const T& find_max_recurse(node_ptr&);
+		void print_tree(node_ptr &, int) const;
+		void print_node(node_ptr &) const;
+		int depth_of_tree(node_ptr &, int, int&);
 
-		void print_tree(node_ptr&) const;
+		const bool is_less_than(const T &, const T &) const;
 
 	private:
 		node_ptr root;
 		std::size_t node_count;
 	};
-
-	
-
 	// class binary_search_tree
 }// namespace drw
 #endif // BINARY_SEARCH_TREES

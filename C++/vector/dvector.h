@@ -13,6 +13,7 @@
 #define DVECTOR_H
 
 #include <memory>
+#include <initializer_list>
 
 namespace drw
 {
@@ -23,16 +24,14 @@ namespace drw
 		explicit dvector();
 		explicit dvector(const std::size_t);
 		explicit dvector(const std::size_t, const T);
+		dvector(std::initializer_list<T>);
 		dvector(dvector<T>&);
 		~dvector();
 		dvector<T> &operator=(const dvector<T>&);
 
-		// TODO : get back after creating iterator class
-		// ITERATORS 
-		//iterator begin();
-		//iterator end();
-		//iterator rbegin();
-		//iterator rend();
+		// ITERATORS
+		// I was gonna make an iterator thing, but I decided not to
+		// because I am not going to use dvector for long term use
 
 		// CAPACITY
 		std::size_t size() const;
@@ -46,8 +45,8 @@ namespace drw
 		// ELEMENT ACCESS
 		T operator[](const std::size_t) const;
 		//T at(int) const;
-		T *front() const;
-		T *back() const;
+		T &front() const;
+		T &back() const;
 		//T data();
 
 		// MODIFIERS
