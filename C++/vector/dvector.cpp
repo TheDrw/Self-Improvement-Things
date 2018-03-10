@@ -1,4 +1,3 @@
-#include "stdafx.h"		// for visual studio
 #include "dvector.h"
 
 namespace drw
@@ -15,10 +14,10 @@ namespace drw
 	// initialize the size of the container. 
 	// zeroes will be filled in the container
 	template<class T>
-	dvector<T>::dvector(const std::size_t size)
-		: dSize(size)
+	dvector<T>::dvector(const std::size_t s)
+		: dSize(s)
 	{
-		dCapacity = size == 0 ? 1 : size;
+		dCapacity = s == 0 ? 1 : s;
 		arr = std::make_unique<T[]>(dSize);
 		for (std::size_t i = 0; i < dSize; ++i) arr[i] = static_cast<T>(0); // fill arr with 0's 
 	}
@@ -26,10 +25,10 @@ namespace drw
 	// initialize the size of the container.
 	// and fill container with a value
 	template<class T>
-	dvector<T>::dvector(const std::size_t size, const T val)
-		: dSize(size)
+	dvector<T>::dvector(const std::size_t s, const T val)
+		: dSize(s)
 	{
-		dCapacity = size == 0 ? 1 : size;
+		dCapacity = s == 0 ? 1 : s;
 		arr = std::make_unique<T[]>(dSize);
 		for (std::size_t i = 0; i < dSize; ++i) arr[i] = val;
 	}
@@ -45,13 +44,12 @@ namespace drw
 	// copys the passed in dvector
 	template<class T>
 	dvector<T>::dvector(dvector<T> &copyArr)
-		: arr()
 	{
 		operator=(copyArr);
 	}
 
 	// destructor - memory gets free'd or somethin'
-	// deletes automatically arr and for saftey measures, sets arr to nullptr
+	// deletes automatically arr
 	template<class T>
 	dvector<T>::~dvector()
 	{}
@@ -72,12 +70,6 @@ namespace drw
 		return *this; // i cheated at this part
 	}
 
-
-	/////////////////////////////////////////////////
-	/////////////	     ITERATORS       ////////////
-	/////////////////////////////////////////////////
-
-
 	 ////////////////////////////////////////////////
 	 /////////////	     CAPACITY       /////////////
 	 ////////////////////////////////////////////////
@@ -92,7 +84,7 @@ namespace drw
 	//int template <class T> dvector<T>::max_size(){}
 
 	// resizes the container. 
-	// calls on reserve(int) if passed in value is greater than the current capacity.
+	// calls on reserve if passed in value is greater than the current capacity.
 	// allocation of memory may occur
 	template<class T>
 	void dvector<T>::resize(const std::size_t newSize)
@@ -123,7 +115,7 @@ namespace drw
 	{
 		if (newCapacity < dSize) return; // if reserve's less than what's already available, skip
 
-		auto oldArr(std::move(arr));						// hold copy of old array 
+		auto oldArr(std::move(arr));								// oldArr takes ownership of current array. arr has nothing now
 		arr = std::make_unique<T[]>(newCapacity);		// create a new arr with new capacity
 		for (std::size_t i = 0; i < dSize; ++i) arr[i] = oldArr[i];	// copy elements in newly sized arr
 
