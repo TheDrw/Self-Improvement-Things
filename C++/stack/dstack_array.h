@@ -16,8 +16,10 @@
 #ifndef DSTACK_ARRAY
 #define DSTACK_ARRAY
 
-#include <memory>	// std::unique_ptr
+#include <memory>		// std::unique_ptr
+#include <cstddef>	// std::size_t
 #include <iostream>	// std::cout
+#include <initializer_list>	// std::initializer_list
 
 namespace drw
 {
@@ -27,12 +29,13 @@ namespace drw
 	public:
 		explicit dstack_array();
 		explicit dstack_array(const T&);
+		dstack_array(std::initializer_list<T>);
 		~dstack_array();
 
 		// member functions
 		bool empty();
 		std::size_t size() const;
-		T top() const;
+		T &top() const;
 		void push(const T&);
 		//emplace
 		void pop();
@@ -50,7 +53,6 @@ namespace drw
 		std::size_t dSize;
 		std::size_t dCapacity;
 		std::unique_ptr<T[]> arr;
-
 	};// class dstack_array
 }// namespace drw
 #endif
