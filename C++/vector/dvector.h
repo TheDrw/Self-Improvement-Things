@@ -30,7 +30,8 @@ namespace drw
 		~dvector();
 		dvector<T> &operator=(const dvector<T>&);
 
-		// ITERATORS
+		// ITERATORS - actually, I won't be making iterators to make my life harder.
+		// I'm also not going to use this class longterm, so no point.
 
 		// CAPACITY
 		std::size_t size() const;
