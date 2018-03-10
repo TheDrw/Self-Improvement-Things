@@ -25,7 +25,7 @@ void testingMyVector()
 	drw::dvector<int> p;
 
 	// test push_back
-	for (int i = 0; i < 10; ++i)
+	for (std::size_t i = 0; i < 10; ++i)
 	{
 		p.push_back(i + 10);
 		std::cout << p.capacity() << " " << p.size() << " index: " << i << " " << p[i] << "\n";
@@ -38,7 +38,7 @@ void testingMyVector()
 
 	std::cout << "---------------------------------------------\n";
 	// test if clear, push_back and capacity goes unchanged
-	for (int i = 0; i < 10; ++i)
+	for (std::size_t i = 0; i < 10; ++i)
 	{
 		p.push_back(i + 10);
 		std::cout << p.capacity() << " " << p.size() << " index: " << i << " " << p[i] << "\n";
@@ -46,7 +46,7 @@ void testingMyVector()
 
 	std::cout << "---------------------------------------------\n";
 	// test pop_back and how the size is affected.
-	for (int i = 0; i < 3; ++i)
+	for (std::size_t i = 0; i < 3; ++i)
 	{
 		p.pop_back();
 		std::cout << p.capacity() << " " << p.size() << "\n";
@@ -58,7 +58,7 @@ void testingMyVector()
 	std::cout << p.capacity() << " " << p.size() << "\n";
 	std::cout << "---------------------------------------------\n";
 	// test if elements are still in their spots
-	for (int i = 0; i < p.size(); ++i)
+	for (std::size_t i = 0; i < p.size(); ++i)
 	{
 		std::cout << p[i] << " ";
 	}
@@ -67,7 +67,7 @@ void testingMyVector()
 	std::cout << "---------------------------------------------\n";
 	// test how it grows after shrunk_to_fit was called by pushing elements into it
 	std::cout << p.capacity() << " " << p.size() << "\n";
-	for (int i = 0; i < 30; ++i)
+	for (std::size_t i = 0; i < 30; ++i)
 	{
 		p.push_back(i + 10);
 		std::cout << p.capacity() << " " << p.size() <<  " " << p[p.size() - 1] << "\n";
@@ -90,7 +90,7 @@ void testingMyVector()
 	// testing filling in container with a value upon initialization 
 	drw::dvector<int> c(10, 69);
 	std::cout << c.capacity() << " "  << c.size();
-	for (int i = 0; i < c.size(); ++i)
+	for (std::size_t i = 0; i < c.size(); ++i)
 	{
 		std::cout << c[i] << " ";
 	}
