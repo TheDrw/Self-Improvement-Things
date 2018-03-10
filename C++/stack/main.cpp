@@ -6,5 +6,8 @@ int main()
 	std::cout << p.size() << '\n';
 	p.print_stack();
 	std::cout << p.top() << '\n';
+	
+	for(int i = 0; i < 15; i++) p.pop();
+	p.print_stack();
 	return 0;
 }
