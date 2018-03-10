@@ -11,7 +11,7 @@ namespace drw
 
 	template<class T>
 	binary_search_tree<T>::binary_search_tree(std::initializer_list<T> i_list)
-		:node_count(0)
+		: node_count(0)
 	{
 		for (const auto &item : i_list) insert(item);
 	}
@@ -108,7 +108,7 @@ namespace drw
 	template<class T>
 	void binary_search_tree<T>::print_tree_preorder()
 	{
-		print_tree(root,0);
+		print_tree(root, 0);
 		std::cout << '\n';
 	}
 
@@ -157,14 +157,14 @@ namespace drw
 	{
 		if (!node)
 			node = std::make_unique<binary_node>(data);
-		else if (is_less_than(data , node->data))	
+		else if (is_less_than(data, node->data))
 			insert(data, node->left);
-		else if (is_less_than(node->data, data))	
+		else if (is_less_than(node->data, data))
 			insert(data, node->right);
 	}
 
 	template<class T>
-	void binary_search_tree<T>::remove(const T &data, node_ptr &node) 
+	void binary_search_tree<T>::remove(const T &data, node_ptr &node)
 	{
 		if (!node)
 		{
@@ -218,8 +218,6 @@ namespace drw
 
 		print_tree(node->right, order);
 		if (order == 2) print_node(node);
-
-		std::cout << "POOP\n";
 	}
 
 	template<class T>
@@ -229,10 +227,9 @@ namespace drw
 	}
 
 	template<class T>
-	int binary_search_tree<T>::depth_of_tree(node_ptr &node, int curr_depth, int &max_depth)
+	void binary_search_tree<T>::depth_of_tree(node_ptr &node, int curr_depth, int &max_depth)
 	{
-		if (!node) return curr_depth - 1;
-
+		if (!node) return;
 
 		depth_of_tree(node->left, curr_depth + 1, max_depth);
 		depth_of_tree(node->right, curr_depth + 1, max_depth);
