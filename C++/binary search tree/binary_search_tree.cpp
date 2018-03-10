@@ -1,5 +1,4 @@
 // andrew esberto
-#include "stdafx.h"
 #include "binary_search_tree.h"
 
 namespace drw
@@ -25,19 +24,19 @@ namespace drw
 	/////////////////////////////////////////////////
 
 	template<class T>
-	const bool binary_search_tree<T>::contains(const T &data)
+	bool binary_search_tree<T>::contains(const T &data)
 	{
 		return contains(data, root);
 	}
 
 	template<class T>
-	const bool binary_search_tree<T>::empty() const
+	bool binary_search_tree<T>::empty() const
 	{
 		return !root;
 	}
 
 	template<class T>
-	const std::size_t binary_search_tree<T>::size() const
+	std::size_t binary_search_tree<T>::size() const
 	{
 		return node_count;
 	}
@@ -68,7 +67,6 @@ namespace drw
 		//if (empty()) return 123;
 
 		return find_min_recurse(root)->data;
-		//return temp->data;
 	}
 
 	template<class T>
@@ -140,7 +138,7 @@ namespace drw
 	// these will all mainly be recursive calls
 
 	template<class T>
-	const bool binary_search_tree<T>::contains(const T &data, node_ptr &node)
+	bool binary_search_tree<T>::contains(const T &data, node_ptr &node)
 	{
 		if (!node)
 			return false;
@@ -153,7 +151,7 @@ namespace drw
 	}
 
 	template<class T>
-	void binary_search_tree<T>::insert(const T &data, node_ptr &node) const
+	void binary_search_tree<T>::insert(const T &data, node_ptr &node)
 	{
 		if (!node)
 			node = std::make_unique<binary_node>(data);
@@ -238,7 +236,7 @@ namespace drw
 	}
 
 	template<class T>
-	const bool binary_search_tree<T>::is_less_than(const T &val_a, const T &val_b) const
+	bool binary_search_tree<T>::is_less_than(const T &val_a, const T &val_b)
 	{
 		return val_a < val_b;
 	}
