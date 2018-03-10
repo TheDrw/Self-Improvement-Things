@@ -1,5 +1,4 @@
 // Andrew Esberto
-#include "stdafx.h"
 #include "queue_array.h"
 
 namespace drw
@@ -8,15 +7,23 @@ namespace drw
 	queue_array<T>::queue_array()
 		:dSize(0), dCapacity(4), dFront(0), dBack(0)
 	{
-		dArray = std::unique_ptr<T[]>(new T[dCapacity]);
+		dArray = std::make_unique<T[]>(dCapacity);
 	}
 
 	template<class T>
 	queue_array<T>::queue_array(const T &data)
 		:dSize(0), dCapacity(4), dFront(0), dBack(0)
 	{
-		dArray = std::unique_ptr<T[]>(new T[dCapacity]);
+		dArray = std::make_unique<T[]>(dCapacity);
 		push(data);
+	}
+
+	template<class T>
+	queue_array<T>::queue_array(std::initializer_list<T> i_list)
+		:dSize(0), dCapacity(4), dFront(0), dBack(0)
+	{
+		dArray = std::make_unique<T[]>(dCapacity);
+		for(const auto &element : i_list) push(element);
 	}
 
 	template<class T>
@@ -41,14 +48,14 @@ namespace drw
 
 	// get first element in queue by reference
 	template<class T>
-	T& queue_array<T>::front() const
+	T &queue_array<T>::front() const
 	{
 		return dArray[dFront];
 	}
 
 	// get last element in queue by reference
 	template<class T>
-	T& queue_array<T>::back() const
+	T &queue_array<T>::back() const
 	{
 		return dArray[dBack];
 	}
@@ -57,7 +64,7 @@ namespace drw
 	// increments size and possible memory allocation occurs.
 	// the queue will grow if the we all spots are taken in the array.
 	template<class T>
-	void queue_array<T>::push(const T& data)
+	void queue_array<T>::push(const T &data)
 	{
 		dArray[dBack] = data;
 		++dSize;
@@ -86,7 +93,7 @@ namespace drw
 
 		--dSize;
 
-		const int THRESHOLD_CAPACITY = 4;
+		const std::size_t THRESHOLD_CAPACITY = 4;
 		if (dCapacity == dSize * THRESHOLD_CAPACITY && dCapacity != THRESHOLD_CAPACITY)
 		{
 			shrink();
@@ -131,9 +138,9 @@ namespace drw
 	void queue_array<T>::grow()
 	{
 		std::size_t oldCapacity = dCapacity;				// remember old capacity
-		dCapacity *= 2;										// double cap
-		auto oldArray(std::move(dArray));					// temp store old array
-		dArray = std::unique_ptr<T[]>(new T[dCapacity]);	// new resized array
+		dCapacity *= 2;															// double cap
+		auto oldArray(std::move(dArray));						// transfer ownership
+		dArray = std::make_unique<T[]>(dCapacity);	// new resized array
 
 		for (std::size_t i = 0; i < dSize; ++i)
 		{
@@ -155,9 +162,9 @@ namespace drw
 	void queue_array<T>::shrink()
 	{
 		std::size_t oldCapacity = dCapacity;				// remember old capacity
-		dCapacity /= 2;										// cut capacity in half
-		auto oldArray(std::move(dArray));					// temp story old array
-		dArray = std::unique_ptr<T[]>(new T[dCapacity]);	// resize curr array
+		dCapacity /= 2;															// cut capacity in half
+		auto oldArray(std::move(dArray));						// transfer ownership
+		dArray = std::make_unique<T[]>(dCapacity);	// resize curr array
 
 		for (std::size_t i = 0; i < dSize; ++i)
 		{
