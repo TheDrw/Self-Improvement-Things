@@ -24,19 +24,19 @@ namespace drw
 	/////////////////////////////////////////////////
 
 	template<class T>
-	bool binary_search_tree<T>::contains(const T &data)
+	const bool binary_search_tree<T>::contains(const T &data)
 	{
 		return contains(data, root);
 	}
 
 	template<class T>
-	bool binary_search_tree<T>::empty() const
+	const bool binary_search_tree<T>::empty() const
 	{
 		return !root;
 	}
 
 	template<class T>
-	std::size_t binary_search_tree<T>::size() const
+	const std::size_t binary_search_tree<T>::size() const
 	{
 		return node_count;
 	}
@@ -138,7 +138,7 @@ namespace drw
 	// these will all mainly be recursive calls
 
 	template<class T>
-	bool binary_search_tree<T>::contains(const T &data, node_ptr &node)
+	const bool binary_search_tree<T>::contains(const T &data, node_ptr &node)
 	{
 		if (!node)
 			return false;
@@ -151,7 +151,7 @@ namespace drw
 	}
 
 	template<class T>
-	void binary_search_tree<T>::insert(const T &data, node_ptr &node)
+	void binary_search_tree<T>::insert(const T &data, node_ptr &node) const
 	{
 		if (!node)
 			node = std::make_unique<binary_node>(data);
@@ -162,29 +162,38 @@ namespace drw
 	}
 
 	template<class T>
-	void binary_search_tree<T>::remove(const T &data, node_ptr &node)
+	void binary_search_tree<T>::remove(const T &target, node_ptr &node)
 	{
 		if (!node)
 		{
 			return;
-		}
-		else if (is_less_than(data, node->data))
+		}// else if node doesn't exist
+		else if (is_less_than(target, node->data))
 		{
-			remove(data, node->left);
-		}
-		else if (is_less_than(node->data, data))
+			remove(target, node->left);
+		}// else if target < data
+		else if (is_less_than(node->data, target))
 		{
-			remove(data, node->right);
-		}
-		else if (node->left && node->right)
-		{
-			node->data = find_min_recurse(node->right)->data;
-			remove(node->data, node->right);
-		}
+			remove(target, node->right);
+		}// else if target > data
 		else
 		{
-			node = (node->left) ? std::move(node->left) : std::move(node->right);
-		}
+			if (node->left && node->right)
+			{
+				// get the min data from the right child's subtree.
+				// then we take that min and the target data get's reassigned with it.
+				// now the new target is the min data we looked for and we'll head to that direction.
+
+				node->data = find_min_recurse(node->right)->data;
+				remove(node->data, node->right);
+			}
+			else
+			{
+				// change ownership with existing children starting with left.
+
+				node = (node->left) ? std::move(node->left) : std::move(node->right);
+			}// else at most 1 child
+		}// else target == data
 	}
 
 	template<class T>
@@ -228,15 +237,14 @@ namespace drw
 	void binary_search_tree<T>::depth_of_tree(node_ptr &node, int curr_depth, int &max_depth)
 	{
 		if (!node) return;
-
+		
 		depth_of_tree(node->left, curr_depth + 1, max_depth);
 		depth_of_tree(node->right, curr_depth + 1, max_depth);
-
 		if (curr_depth > max_depth) max_depth = curr_depth;
 	}
 
 	template<class T>
-	bool binary_search_tree<T>::is_less_than(const T &val_a, const T &val_b)
+	const bool binary_search_tree<T>::is_less_than(const T &val_a, const T &val_b) const
 	{
 		return val_a < val_b;
 	}
